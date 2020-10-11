@@ -1,0 +1,5 @@
+rootProject.name = 'pc-2021-li52d'
+include 'aula01-intro'
+include 'aula01-test'
+
+
