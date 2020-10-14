@@ -33,6 +33,10 @@ Thumbs.db
 *.sbr
 obj/
 
+# Ignore InteliJ metadata
+.idea
+*.iml
+
 #Ignore files built by IntelliJ
 build
 out/

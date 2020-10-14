@@ -56,7 +56,7 @@ public class BasicTests {
 
         thread.start();
         thread.join();
-        log.info("thread 'thraed' is alive? {0}", thread.isAlive());
+        log.info("thread 'thread' is alive? {0}", thread.isAlive());
         System.out.println("new thread in state " + thread.getState());
     }
 

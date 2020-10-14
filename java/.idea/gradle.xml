@@ -12,6 +12,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/aula01-intro" />
             <option value="$PROJECT_DIR$/aula01-test" />
+            <option value="$PROJECT_DIR$/aula02-moreraces" />
+            <option value="$PROJECT_DIR$/aula03-flow-synch" />
           </set>
         </option>
       </GradleProjectSettings>
