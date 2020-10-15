@@ -7,6 +7,7 @@ namespace Aula_2020_10_14
 { /// <summary>
   /// A try to produce a generic BoundedQueue
   /// using mutex and event has data and control flow synchronizers, respectively
+  /// This try has a fundamental flaw at the points of code identified by "A" and "B"
   /// </summary>
   /// <typeparam name="T"></typeparam>
     public class BoundedQueue<T> : IBoundedQueue<T>
@@ -51,11 +52,13 @@ namespace Aula_2020_10_14
         public T Get()
         {
             mutex.WaitOne(); // acquire mutex
-
             while (IsEmpty())
             { // must wait
                 mutex.ReleaseMutex();
-               
+               // "A"
+               // here there is a vulnerabilty window between release the mutex
+               // and enter the event wait queue where anything can happen that can lead
+               // to missing notifications
                 elemsAvailable.WaitOne();
                 mutex.WaitOne();
             }
@@ -64,7 +67,6 @@ namespace Aula_2020_10_14
             size--;
 
             mutex.ReleaseMutex(); // release mutex
-
             spaceAvailable.Set(); //signal available space
             return first;
 
@@ -77,6 +79,10 @@ namespace Aula_2020_10_14
             while (IsFull())
             { // must wait
                 mutex.ReleaseMutex();
+                // "B"
+                // here there is a vulnerabilty window between release the mutex
+                // and enter the event wait queue where anything can happen that can lead
+                // to missing notifications
                 spaceAvailable.WaitOne();
                 mutex.WaitOne();
             }
