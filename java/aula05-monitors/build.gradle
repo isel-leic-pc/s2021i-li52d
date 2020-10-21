@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+version 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':aula05-utils')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

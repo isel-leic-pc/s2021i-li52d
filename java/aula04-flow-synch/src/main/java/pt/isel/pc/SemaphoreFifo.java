@@ -7,13 +7,13 @@ import pt.isel.pc.utils.TimeoutHolder;
  * aren't fair to the greater Acquisitions since
  *
  * In order to it fairly we have to maintain a list of pending
- * acquisitions and in this version we wiil do exactly that
+ * acquisitions and in this version we will do exactly that
  */
-public class Semaphore3 {
+public class SemaphoreFifo {
     private int permits;
     private Object monitor = new Object();
     
-    public Semaphore3(int initialUnits) {
+    public SemaphoreFifo(int initialUnits) {
         permits = initialUnits;
     }
 
