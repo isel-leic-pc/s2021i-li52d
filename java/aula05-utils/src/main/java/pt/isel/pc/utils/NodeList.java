@@ -33,6 +33,9 @@ public class NodeList<T> implements Iterable<T> {
         }
     }
 
+    public void clear() {
+        // TODO
+    }
     public static class Node<T> {
         private Node<T> next, previous;
         public final T value;

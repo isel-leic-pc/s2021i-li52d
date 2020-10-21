@@ -3,20 +3,29 @@ package pt.isel.pc;
 import pt.isel.pc.utils.NodeList;
 import pt.isel.pc.utils.TimeoutHolder;
 
-public class SemaphoreFifoED {
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class SemaphoreFifoSN {
     private int permits;
-    private Object monitor = new Object();
+    private Lock monitor = new ReentrantLock();
 
     private static class Request {
         public final int units;
         private boolean done;
+        public final Condition condition;
 
-        public Request(int units) {
+        public Request(Condition condition,
+                       int units) {
+            this.condition = condition;
             this.units = units;
         }
 
         public void complete() {
             this.done = true;
+            condition.signal();
         }
 
         public boolean isCompleted() {
@@ -27,18 +36,14 @@ public class SemaphoreFifoED {
     private NodeList<Request> requests;
 
     private void notifyWaiters() {
-        boolean toNotify = false;
         while ( !requests.empty() && permits >= requests.first().units) {
             Request req = requests.removeFirst();
             permits -= req.units;
             req.complete();
-            toNotify = true;
         }
-        if (toNotify)
-            monitor.notifyAll();
     }
 
-    public SemaphoreFifoED(int initialUnits) {
+    public SemaphoreFifoSN(int initialUnits) {
         if (initialUnits > 0)
             permits = initialUnits;
         requests = new NodeList<>();
@@ -46,7 +51,8 @@ public class SemaphoreFifoED {
 
     public boolean acquire(int units, long timeout)
             throws InterruptedException {
-        synchronized (monitor) {
+        monitor.lock();
+        try {
             // non blocking path
             if (requests.empty() && permits >= units) {
                 permits -= units;
@@ -57,11 +63,13 @@ public class SemaphoreFifoED {
             }
 
             TimeoutHolder th = new TimeoutHolder(timeout);
-            Request req = new Request(units);
+            Request req = new Request(
+                    monitor.newCondition(), units);
             NodeList.Node<Request> node = requests.addLast(req);
             do {
                 try {
-                    monitor.wait(th.remaining());
+                    req.condition.await(
+                            th.remaining(), TimeUnit.MILLISECONDS);
                     if (req.isCompleted()) {
                         return true;
                     }
@@ -83,6 +91,9 @@ public class SemaphoreFifoED {
 
             } while (true);
         }
+        finally {
+            monitor.unlock();
+        }
     }
 
     public boolean acquire(int units)
@@ -91,9 +102,13 @@ public class SemaphoreFifoED {
     }
 
     public void release(int units) {
-        synchronized(monitor) {
+        monitor.lock();
+        try {
             permits += units;
             notifyWaiters();
+        }
+        finally {
+            monitor.unlock();
         }
     }
 }

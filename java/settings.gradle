@@ -6,4 +6,5 @@ include 'aula04-flow-synch'
 include 'Series'
 include 'aula05-utils'
 include 'aula05-monitors'
+include 'aula06-monitors'
 
