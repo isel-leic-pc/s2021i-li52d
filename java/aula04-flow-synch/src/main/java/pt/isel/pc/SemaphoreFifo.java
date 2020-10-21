@@ -20,37 +20,19 @@ public class SemaphoreFifo {
     public boolean acquire(int units, long timeout)
             throws InterruptedException {
         synchronized (monitor) {
-            // non blocking path
-            if (permits >= units) {
-                permits -= units;
-                return true;
-            }
-            if (timeout == 0)
-                return false;
-            // wait
-            TimeoutHolder th = new TimeoutHolder(timeout);
-            do {
-                monitor.wait(th.remaining());
-                if (permits >= units ) {
-                    permits -= units;
-                    return true;
-                }
-                if (th.timeout()) return false;
-            } while(true);
+           return false;
         }
     }
 
     public boolean acquire(int units)
             throws InterruptedException {
-        //synchronized(monitor) {
         return acquire(units, TimeoutHolder.INFINITE);
-        //}
+
     }
 
     public void release(int units) {
         synchronized (monitor) {
-            permits += units;
-            monitor.notifyAll();
+
         }
     }
 }

@@ -3,32 +3,42 @@ package pt.isel.pc;
 import pt.isel.pc.utils.NodeList;
 import pt.isel.pc.utils.TimeoutHolder;
 
-/**
- * the counter semaphores (with multiple release and acquires)
- * aren't fair to the greater Acquisitions since
- *
- * In order to it fairly we have to maintain a list of pending
- * acquisitions and in this version we will do exactly that
- */
-public class SemaphoreFifo {
+public class SemaphoreFifoED {
     private int permits;
     private Object monitor = new Object();
 
     private static class Request {
         public final int units;
+        private boolean done;
+
         public Request(int units) {
             this.units = units;
+        }
+
+        public void complete() {
+            this.done = true;
+        }
+
+        public boolean isCompleted() {
+            return done;
         }
     }
 
     private NodeList<Request> requests;
 
     private void notifyWaiters() {
-       if ( !requests.empty() && permits >= requests.first().units)
-           monitor.notifyAll();
+        boolean toNotify = false;
+        while ( !requests.empty() && permits >= requests.first().units) {
+            Request req = requests.removeFirst();
+            permits -= req.units;
+            req.complete();
+            toNotify = true;
+        }
+        if (toNotify)
+            monitor.notifyAll();
     }
 
-    public SemaphoreFifo(int initialUnits) {
+    public SemaphoreFifoED(int initialUnits) {
         if (initialUnits > 0)
             permits = initialUnits;
         requests = new NodeList<>();
@@ -52,10 +62,7 @@ public class SemaphoreFifo {
             do {
                 try {
                     monitor.wait(th.remaining());
-                    if (requests.first() == req && permits >= req.units) {
-                        requests.removeFirst();
-                        permits -= req.units;
-                        notifyWaiters();
+                    if (requests.first().isCompleted()) {
                         return true;
                     }
                     if (th.timeout()) {
@@ -64,16 +71,22 @@ public class SemaphoreFifo {
                         return false;
                     }
                 } catch (InterruptedException e) {
+                    if( req.isCompleted()) {
+                        // delay the interruption and return success
+                        Thread.currentThread().interrupt();
+                        return true;
+                    }
                     requests.remove(node);
                     notifyWaiters();
                     throw e;
                 }
+
             } while (true);
         }
     }
 
     public boolean acquire(int units)
-        throws InterruptedException {
+            throws InterruptedException {
         return acquire(units, TimeoutHolder.INFINITE);
     }
 
