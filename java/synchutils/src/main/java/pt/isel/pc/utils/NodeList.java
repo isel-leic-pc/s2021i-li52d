@@ -33,9 +33,6 @@ public class NodeList<T> implements Iterable<T> {
         }
     }
 
-    public void clear() {
-        // TODO
-    }
     public static class Node<T> {
         private Node<T> next, previous;
         public final T value;
@@ -148,6 +145,11 @@ public class NodeList<T> implements Iterable<T> {
     public T removeLast() {
         Node<T> node = removeLastNode();
         return node.value;
+    }
+
+    // create a new empty list
+    public void clear() {
+        head = new Node<T>();
     }
 
 }

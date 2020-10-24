@@ -10,14 +10,13 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/Series" />
             <option value="$PROJECT_DIR$/aula01-intro" />
             <option value="$PROJECT_DIR$/aula01-test" />
             <option value="$PROJECT_DIR$/aula02-moreraces" />
             <option value="$PROJECT_DIR$/aula04-flow-synch" />
             <option value="$PROJECT_DIR$/aula05-monitors" />
-            <option value="$PROJECT_DIR$/aula05-utils" />
             <option value="$PROJECT_DIR$/aula06-monitors" />
+            <option value="$PROJECT_DIR$/synchutils" />
           </set>
         </option>
       </GradleProjectSettings>
