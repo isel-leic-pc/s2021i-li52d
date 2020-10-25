@@ -115,7 +115,7 @@ public class NodeList<T> implements Iterable<T> {
     }
 
     public boolean empty() {
-        return count ==0;
+        return count == 0;
     }
 
     public int size() {
@@ -148,6 +148,7 @@ public class NodeList<T> implements Iterable<T> {
     // create a new empty list
     public void clear() {
         head = new Node<T>();
+        count = 0;
     }
 
 }
