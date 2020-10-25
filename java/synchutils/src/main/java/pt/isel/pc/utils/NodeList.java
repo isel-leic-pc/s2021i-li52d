@@ -84,6 +84,8 @@ public class NodeList<T> implements Iterable<T> {
     }
 
     public void remove(Node<T> node) {
+        if (empty())
+            throw new NoSuchElementException();
         node.remove();
         count--;
     }
@@ -121,8 +123,6 @@ public class NodeList<T> implements Iterable<T> {
     }
 
     public Node<T> removeFirstNode() {
-        if (empty())
-            throw new NoSuchElementException();
         Node<T> rem = head.next;
         remove(rem);
         return rem;
@@ -130,8 +130,6 @@ public class NodeList<T> implements Iterable<T> {
 
 
     public Node<T> removeLastNode() {
-        if (empty())
-            throw new NoSuchElementException();
         Node<T> rem = head.previous;
         remove(rem);
         return rem;
