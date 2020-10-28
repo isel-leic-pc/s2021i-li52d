@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
@@ -16,6 +15,7 @@
             <option value="$PROJECT_DIR$/aula04-flow-synch" />
             <option value="$PROJECT_DIR$/aula05-monitors" />
             <option value="$PROJECT_DIR$/aula06-monitors" />
+            <option value="$PROJECT_DIR$/aula07-monitors" />
             <option value="$PROJECT_DIR$/synchutils" />
           </set>
         </option>
