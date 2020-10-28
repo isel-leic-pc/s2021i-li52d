@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
@@ -21,23 +22,24 @@ public class CounterSemaphoreSNTests {
             throws InterruptedException {
         CounterSemaphoreSN cs = new CounterSemaphoreSN(1);
 
-        assertTrue(
-                cs.acquire(1)
+        assertFalse(
+                cs.acquire(2, 1000)
         );
-        assertFalse(cs.acquire(1, 1000));
+        assertTrue(cs.acquire(1, 1000));
     }
 
     @Test
     public void simpleAcquireReleaseTest()
             throws InterruptedException {
         CounterSemaphoreSN cs = new CounterSemaphoreSN(0);
+        CountDownLatch latch = new CountDownLatch(1);
 
         int[] val = {0};
 
         Thread t = new Thread(() -> {
             try {
-                cs.acquire(1);
-                val[0] = 1;
+                if (cs.acquire(1))  val[0] = 1;
+                latch.countDown();
             }
             catch(InterruptedException e) {
                 val[0] = -1;
@@ -46,7 +48,7 @@ public class CounterSemaphoreSNTests {
         t.start();
 
         cs.release(1);
-        join(t, 3000);
+        latch.await(1000, TimeUnit.MILLISECONDS);
         log.info("Value= {}", val[0]);
         assertEquals(1, val[0]);
     }
@@ -89,8 +91,8 @@ public class CounterSemaphoreSNTests {
         int totalUnits = ((nThreads+1)*(nThreads))/2;
 
         // give one by one unit periodically
-        for (int i=0; i < ((nThreads+1)*nThreads)/2; ++i) {
-            cs.release(totalUnits);
+        for (int i=0; i < totalUnits; ++i) {
+            cs.release(1);
             sleep(50);
         }
 

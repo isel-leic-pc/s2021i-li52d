@@ -21,12 +21,13 @@ public class BroadcastEvent {
             this.done = false;
         }
     }
-    private NodeList<Request> requests;
+
+    private int version;
 
     public BroadcastEvent() {
         monitor = new ReentrantLock();
         awakeAll = monitor.newCondition();
-        requests = new NodeList<>();
+        version = 1;
     }
 
     /**
@@ -42,16 +43,14 @@ public class BroadcastEvent {
                 throw new TimeoutException();
             TimeoutHolder th = new TimeoutHolder(timeout);
             Request req = new Request();
-            NodeList.Node<Request> node = requests.addLast(req);
-
+            int current = version;
             do {
                 try {
                     awakeAll.await(th.remaining(),TimeUnit.MILLISECONDS);
-                    if (req.done) {
+                    if (current != version) {
                         return;
                     }
                     if (th.timeout()) {
-                        requests.remove(node);
                         throw new TimeoutException();
                     }
                 }
@@ -60,7 +59,6 @@ public class BroadcastEvent {
                         Thread.currentThread().interrupt();
                         return;
                     }
-                    requests.remove(node);
                     throw e;
                 }
             }
@@ -79,9 +77,7 @@ public class BroadcastEvent {
     public void broadcast() {
         monitor.lock();
         try {
-            for(Request req: requests)
-                req.done = true;
-            requests.clear();
+            version++;
             awakeAll.signalAll();
         }
         finally {

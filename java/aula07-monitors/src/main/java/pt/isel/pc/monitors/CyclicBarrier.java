@@ -12,26 +12,48 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class CyclicBarrier {
     private int partners;
-    private Lock monitor;
     private int remaining;
+
+    private Lock monitor;
     private Condition passBarrier;
 
     private enum State { Opened, Broken, Closed };
-    private State state;
+
+    private BatchRequestQueue<State> queue;
+    private boolean broken;
 
     public CyclicBarrier(int partners) {
-
+        this.monitor = new ReentrantLock();
+        this.passBarrier = monitor.newCondition();
+        this.partners = partners;
+        this.remaining = partners;
+        this.queue = new BatchRequestQueue<>(State.Closed);
     }
 
     private void nextSynch() {
-
+        remaining = partners;
+        queue.newBatch(State.Closed);
     }
-    private void openBarrier() {
 
+    private void openBarrier() {
+        if (queue.size() > 0) {
+            BatchRequestQueue.Request<State> req =
+                        queue.current();
+            req.value = State.Opened;
+            passBarrier.signalAll();
+        }
+
+        nextSynch();
     }
 
     private void breakBarrier() {
-
+        if (queue.size() > 0) {
+            BatchRequestQueue.Request<State> req =
+                    queue.current();
+            req.value = State.Broken;
+            passBarrier.signalAll();
+        }
+        broken = true;
     }
 
 
@@ -41,7 +63,39 @@ public class CyclicBarrier {
                     TimeoutException {
         monitor.lock();
         try {
-            return 0;
+            if (broken) {
+                throw new BrokenBarrierException();
+            }
+            int index = --remaining;
+            if (index == 0) {
+                openBarrier();
+                return 0;
+            }
+            TimeoutHolder th = new TimeoutHolder(timeout);
+            BatchRequestQueue.Request<State> req = queue.add();
+            do {
+                try {
+                    passBarrier.await(th.remaining(), TimeUnit.MILLISECONDS);
+                    if (req.value == State.Opened) return index;
+                    if (req.value == State.Broken)
+                        throw new BrokenBarrierException();
+                    if (th.timeout()) {
+                        queue.remove(req);
+                        breakBarrier();
+                        throw new TimeoutException();
+                    }
+                }
+                catch(InterruptedException e) {
+                    if (req.value == State.Opened) {
+                        Thread.currentThread().interrupt();
+                        return index;
+                    }
+                    breakBarrier();
+                    queue.remove(req);
+                    throw e;
+                }
+            }
+            while(true);
         }
         finally {
             monitor.unlock();
@@ -51,7 +105,8 @@ public class CyclicBarrier {
     public void reset() {
         monitor.lock();
         try {
-
+            breakBarrier();
+            nextSynch();
         }
         finally {
             monitor.unlock();
@@ -59,12 +114,14 @@ public class CyclicBarrier {
     }
 
     public boolean isBroken() {
+
         monitor.lock();
         try {
-            return false;
+             return broken;
         }
         finally {
             monitor.unlock();
         }
+
     }
 }
