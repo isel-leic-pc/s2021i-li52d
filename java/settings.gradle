@@ -7,4 +7,5 @@ include 'synchutils'
 include 'aula05-monitors'
 include 'aula06-monitors'
 include 'aula07-monitors'
+include 'aula08-simplethreadpool'
 
