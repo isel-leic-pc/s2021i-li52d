@@ -35,7 +35,7 @@ public class NodeList<T> implements Iterable<T> {
 
     public static class Node<T> {
         private Node<T> next, previous;
-        public final T value;
+        public  T value;
 
         public Node(T val) {
             this.value = val;
