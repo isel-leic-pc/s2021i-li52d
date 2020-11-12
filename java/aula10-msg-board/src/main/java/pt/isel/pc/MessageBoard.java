@@ -1,76 +1,71 @@
 package pt.isel.pc;
 
-import pt.isel.pc.utils.NodeList;
+import pt.isel.pc.utils.BatchRequestQueue;
 import pt.isel.pc.utils.TimeoutHolder;
 
+import javax.print.DocFlavor;
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public class MessageBoard<M> {
     private Object monitor;
 
-    private NodeList<M> requests;
-    
+
+    private BatchRequestQueue<M> batch;
+
     private long expirationTime;
     private M message;
 
     public MessageBoard() {
+        batch = new BatchRequestQueue<>();
         monitor = new Object();
-        requests = new NodeList<>();
     }
 
-    private void notifyNewMessage(M message) {
-        while(!requests.empty()) {
-            NodeList.Node<M> node = requests.removeFirstNode();
-            node.value = message;
-        }
-        monitor.notifyAll();
-    }
-    
     public void Publish(M message, int exposureTime) {
         synchronized(monitor) {
-            if (!requests.empty()) {
-                notifyNewMessage(message);
-            }
             if (exposureTime > 0) {
                 expirationTime = System.currentTimeMillis() + exposureTime;
                 this.message = message;
             }
+            if (batch.size() > 0) {
+                batch.current().value = message;
+                monitor.notifyAll();
+            }
+            batch.newBatch(null);
         }
     }
 
     private boolean validMessage() {
-        return message != null && System.currentTimeMillis() < expirationTime;
+        return message != null && expirationTime >
+                System.currentTimeMillis();
     }
 
     public Optional<M> Consume(long timeout)
             throws  InterruptedException {
         synchronized(monitor) {
-            // non blocking path
             if (validMessage()) return Optional.of(message);
-            // try path
             if (timeout == 0) return Optional.empty();
-            // prepare blocking path
+            BatchRequestQueue.Request<M> req = batch.add();
             TimeoutHolder th = new TimeoutHolder(timeout);
-            NodeList.Node<M> node = requests.addLast(null);
             do {
                 try {
                     monitor.wait(th.remaining());
-                    if (node.value != null)
-                        return Optional.of(node.value);
+                    if (req.value != null) return Optional.of(req.value);
                     if (th.timeout()) {
-                        requests.remove(node);
+                        batch.remove(req);
                         return Optional.empty();
                     }
                 }
                 catch(InterruptedException e) {
-                    if (node.value != null) {
+                    if (req.value != null) {
                         Thread.currentThread().interrupt();
-                        return Optional.of(node.value);
+                        return Optional.of(req.value);
                     }
-                    requests.remove(node);
+                    batch.remove(req);
                     throw e;
                 }
-            } while(true);
+            }
+            while(true);
         }
     }
 

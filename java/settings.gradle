@@ -9,4 +9,7 @@ include 'aula06-monitors'
 include 'aula07-monitors'
 include 'aula08-simplethreadpool'
 include 'aula09-monitors'
+include 'aula10-lf-intro'
+include 'aula10-msg-board'
+include 'aula11-using-CAS'
 

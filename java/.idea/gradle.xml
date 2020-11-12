@@ -19,6 +19,9 @@
             <option value="$PROJECT_DIR$/aula07-monitors" />
             <option value="$PROJECT_DIR$/aula08-simplethreadpool" />
             <option value="$PROJECT_DIR$/aula09-monitors" />
+            <option value="$PROJECT_DIR$/aula10-lf-intro" />
+            <option value="$PROJECT_DIR$/aula10-msg-board" />
+            <option value="$PROJECT_DIR$/aula11-using-CAS" />
             <option value="$PROJECT_DIR$/synchutils" />
           </set>
         </option>
