@@ -5,16 +5,31 @@ import pt.isel.pc.utils.TimeoutHolder;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CounterSemaphoreOpt {
-    private AtomicInteger permits;
+    private final AtomicInteger  permits;
     private Object monitor = new Object();
+    private volatile int waiters;
 
     public CounterSemaphoreOpt(int initialUnits) {
         permits = new AtomicInteger(initialUnits);
     }
 
     private boolean tryAcquire(int units) {
-        // To (Re)Implement
-        return false;
+        /*
+        do {
+            int obs = permits.get();
+            if (obs < units) return false;
+            if (permits.compareAndSet(obs, obs - units))
+                return true;
+        }
+        while(true);
+         */
+        int obs;
+        do {
+            obs = permits.get();
+            if (obs < units) return false;
+        }
+        while(!permits.compareAndSet(obs, obs - units));
+        return true;
     }
 
     public boolean acquire(int units, long timeout)
@@ -23,16 +38,23 @@ public class CounterSemaphoreOpt {
         // fast path
         if (tryAcquire(units)) return true;
         synchronized (monitor) {
-
             if (timeout == 0)
                 return false;
             // wait
             TimeoutHolder th = new TimeoutHolder(timeout);
+            waiters++;
+            if (tryAcquire(units))  {  waiters--; return true; }
             do {
-                monitor.wait(th.remaining());
-                if (tryAcquire(units)) return true;
 
-                if (th.timeout()) return false;
+                monitor.wait(th.remaining());
+                if (tryAcquire(units)) {
+                    waiters--;
+                    return true;
+                }
+                if (th.timeout()) {
+                    waiters--;
+                    return false;
+                }
             } while(true);
         }
     }
@@ -51,9 +73,12 @@ public class CounterSemaphoreOpt {
     }
 
     public void release(int units) {
-        synchronized (monitor) {
-            permits.addAndGet(units);
-            monitor.notifyAll();
+        permits.addAndGet(units);
+        if (waiters > 0) {
+            synchronized (monitor) {
+                if (waiters > 0 )
+                     monitor.notifyAll();
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ public class MutableInteger {
     private void setX(int x) {
         this.x = x;
     }
+
     public  void set(int value) {
         setX(2);
         setX(3);

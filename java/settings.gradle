@@ -12,4 +12,5 @@ include 'aula09-monitors'
 include 'aula10-lf-intro'
 include 'aula10-msg-board'
 include 'aula11-using-CAS'
+include 'aula12-lf-collections-intro'
 

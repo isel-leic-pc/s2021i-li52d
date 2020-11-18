@@ -5,9 +5,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 public class Lazy<T> {
-    private volatile T value;
-    private Lock lock;
-    private Supplier<T> creator;
+    private  T value;
+    private final Lock lock;
+    private final Supplier<T> creator;
 
     public Lazy(Supplier<T> creator) {
         this.creator = creator;
@@ -20,7 +20,6 @@ public class Lazy<T> {
             try {
                 if (value == null)
                     value = creator.get();
-
             }
             finally {
                 lock.unlock();
