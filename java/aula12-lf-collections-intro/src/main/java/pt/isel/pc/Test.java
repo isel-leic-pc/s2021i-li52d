@@ -5,7 +5,7 @@ import java.time.LocalTime;
 public class Test {
     // necessary volatile to correct publication
     // of line 18 attribution
-    public  volatile static Lazy<String> stringSupplier;
+    public volatile static Lazy<String> stringSupplier;
 
     public static void main(String[] args)
         throws InterruptedException{

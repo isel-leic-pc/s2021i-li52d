@@ -45,15 +45,17 @@ public class CounterSemaphoreOpt {
             waiters++;
             if (tryAcquire(units))  {  waiters--; return true; }
             do {
-
-                monitor.wait(th.remaining());
-                if (tryAcquire(units)) {
-                    waiters--;
-                    return true;
+                try {
+                    monitor.wait(th.remaining());
+                    if (tryAcquire(units)) {
+                        return true;
+                    }
+                    if (th.timeout()) {
+                        return false;
+                    }
                 }
-                if (th.timeout()) {
+                finally  {
                     waiters--;
-                    return false;
                 }
             } while(true);
         }
