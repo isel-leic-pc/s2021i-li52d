@@ -12,6 +12,7 @@ public class UnsafeMessageBox<M>   {
     private  MsgHolder msgHolder = null;
 
     public void Publish(M m, int lvs) {
+
         msgHolder = new MsgHolder(m, lvs);
     }
 

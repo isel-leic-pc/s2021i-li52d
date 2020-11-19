@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 namespace Aula01_intro {
    
     class Program {
+        public static void Main() {
+
+        }
         
     }
 }
