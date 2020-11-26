@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynchUtils", "SynchUtils\Sy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aula14-memory-model", "Aula14-memory-model\Aula14-memory-model.csproj", "{2A3D97C8-069A-47D3-93E5-2179EB427E55}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aula16-threadpools", "Aula16-threadpools\Aula16-threadpools.csproj", "{0CA61658-0314-4527-A5C1-538D37AD7526}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{2A3D97C8-069A-47D3-93E5-2179EB427E55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A3D97C8-069A-47D3-93E5-2179EB427E55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A3D97C8-069A-47D3-93E5-2179EB427E55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CA61658-0314-4527-A5C1-538D37AD7526}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{0CA61658-0314-4527-A5C1-538D37AD7526}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{0CA61658-0314-4527-A5C1-538D37AD7526}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CA61658-0314-4527-A5C1-538D37AD7526}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
