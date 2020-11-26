@@ -83,6 +83,12 @@ public class PCFuture<V> implements RunnableFuture<V>  {
 				thread.interrupt();
 
 			state = CANCELLED;
+
+			// a terminal state was achieved
+			// notify eventual waiters on get operation
+			synchronized (mon) {
+				mon.notifyAll();
+			}
 			return true;
 		}
 	}
