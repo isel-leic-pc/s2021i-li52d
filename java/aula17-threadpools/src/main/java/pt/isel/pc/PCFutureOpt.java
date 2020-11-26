@@ -26,7 +26,8 @@ public class PCFutureOpt<V> implements Future<V> {
 
 
 	public static <V> Future<V> submit(Callable<V> supplier) {
-		PCFuture<V> future = new PCFuture<V>(supplier);
+		// just for test purposes
+		PCFutureOpt<V> future = new PCFutureOpt<V>(supplier);
 		(new Thread( future::run)).start();
 		return future;
 	}
@@ -80,10 +81,10 @@ public class PCFutureOpt<V> implements Future<V> {
 	public boolean cancel(boolean mayInterruptIfRunning) {
 		int obsState = state.get();
 		if (obsState > STARTED  ||
-		    !state.compareAndSet(obsState, CANCELLED) ) return false;
+			!state.compareAndSet(obsState, CANCELLED) ) return false;
 
 		if (obsState != NEW && mayInterruptIfRunning)
-				thread.interrupt();
+			thread.interrupt();
 
 		if (waiters > 0) {
 			synchronized (mon) {
@@ -160,3 +161,4 @@ public class PCFutureOpt<V> implements Future<V> {
 		return val;
 	}
 }
+

@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
 
 public class PCFutureTests {
 	private static final Logger log =
-		LoggerFactory.getLogger(PCFutureOptTests.class);
+		LoggerFactory.getLogger(PCFutureTests.class);
 
 	@Test
 	public void simpleCompletionTest()

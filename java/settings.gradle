@@ -17,4 +17,5 @@ include 'aula13-lf-intro2'
 include 'aula14-ABA'
 include 'aula15-threadpools'
 include 'aula16-threadpools'
+include 'aula17-threadpools'
 
