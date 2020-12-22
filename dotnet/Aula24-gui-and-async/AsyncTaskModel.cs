@@ -22,7 +22,7 @@ namespace Aula24_gui_and_async {
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public static Task<Image> DownloadImageFromUrlAsync(String url) {
+        public static Task<Image> DownloadImageFromUrlAsync(string url) {
             HttpClient client = new HttpClient();
             //client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0");
           

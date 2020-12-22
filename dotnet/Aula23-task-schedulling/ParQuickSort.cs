@@ -166,7 +166,7 @@ namespace Aula23_task_schedulling {
             ParQuickSort sort = new ParQuickSort(LEVEL);
         
 
-            // Test(sort.SortTP, vals, "Threadpool sort");
+            //Test(sort.SortTP, vals, "Threadpool sort");
 
             Test(sort.SortTasks, vals, "Tasks sort");
 

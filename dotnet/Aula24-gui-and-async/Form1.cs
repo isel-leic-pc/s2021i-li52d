@@ -44,13 +44,25 @@ namespace Aula24_gui_and_async {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button_Click(object sender, EventArgs e) {
-
+            string debugTxt;
             var t1 = DownloadImageFromUrlAsync(url1.Text);
             var t2 = DownloadImageFromUrlAsync(url2.Text);
             var t3 = DownloadImageFromUrlAsync(url3.Text);
-
+            debugTxt = String.Format("button_Click in thread {0}",
+                Thread.CurrentThread.ManagedThreadId);
             Task.WhenAll(t1, t2, t3).
                 ContinueWith(t => {
+                    debugTxt += String.Format("continuation in thread {0}",
+              Thread.CurrentThread.ManagedThreadId);
+
+                    try {
+                        //Console.WriteLine(debugTxt);
+                        status.Text = debugTxt;
+                    }
+                    catch (Exception exception) {
+                        int a = 3;
+                    }
+
                     if (t.Status == TaskStatus.Faulted)
                         ShowErrors(t.Exception);
                     else {
@@ -102,15 +114,11 @@ namespace Aula24_gui_and_async {
             string[] sites = {
                 url1.Text, url2.Text, url3.Text
             };
-            Debug.WriteLine("Start in UI thread {0}",
-                Thread.CurrentThread.ManagedThreadId);
+            
             PictureBox[] viewers = { pictureBox1, pictureBox2, pictureBox3 };
             int index = 0;
             foreach (string url in sites) {
-                Image img =
-                    await AsyncTaskModel.DownloadImageFromUrlAsync(url);
-                Debug.WriteLine("Continuation on thread {0}",
-                    Thread.CurrentThread.ManagedThreadId);
+                Image img = await DownloadImageFromUrlAsync(url);
                 viewers[index].Image = img;
                 index++;
                 status.Text = "Done with Success";
