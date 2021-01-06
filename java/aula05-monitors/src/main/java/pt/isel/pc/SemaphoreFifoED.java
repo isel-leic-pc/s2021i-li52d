@@ -14,11 +14,9 @@ public class SemaphoreFifoED {
         public Request(int units) {
             this.units = units;
         }
-
         public void complete() {
             this.done = true;
         }
-
         public boolean isCompleted() {
             return done;
         }
