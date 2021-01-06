@@ -59,8 +59,10 @@ namespace AsyncLib
 
 		public Task<bool> AcquireAsync(int units) {
 			lock(mutex) {
-				if (pendingAcquires.Count == 0 && permits >= units)
+				if (pendingAcquires.Count == 0 && permits >= units) {
+					permits -= units;
 					return Task.FromResult(true);
+				}
 				PendingAcquire pa = new PendingAcquire(units);
 				pendingAcquires.AddLast(pa);
 				return pa.Task;
@@ -71,7 +73,7 @@ namespace AsyncLib
 		
 			if (permits + units < 0 || permits + units > maxPermits)
 				throw new ArgumentException("Invalid release units");
-
+			permits += units;
 			LinkedList<PendingAcquire> satisfiedRequests = null;
 
 			lock (mutex) {
@@ -85,6 +87,7 @@ namespace AsyncLib
 				}
 			}
 
+			if (satisfiedRequests == null) return;
 			foreach(PendingAcquire pa in satisfiedRequests) {
 				pa.Complete();
 			}

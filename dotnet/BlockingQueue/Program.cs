@@ -13,7 +13,7 @@ namespace BlockingQueue
 			BlockingQueueAsync<int> queue = new BlockingQueueAsync<int>(10);
 
 			ShowCurrentThread("Start Main");
-			Task<int> taskInt = queue.Take1Async();
+			Task<int> taskInt = queue.TakeAsync();
 
 			Task t = Task.Run(() =>
 			{

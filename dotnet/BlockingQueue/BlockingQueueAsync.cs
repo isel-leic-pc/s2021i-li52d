@@ -9,42 +9,45 @@ namespace AsyncLib
 {
 	public class BlockingQueueAsync<T>
 	{
-		private SemaphoreSlim itemsAvaiable;
-		private SemaphoreSlim spaceAvaiable;
-		
+		//private SemaphoreSlim itemsAvaiable;
+		// private SemaphoreSlim spaceAvaiable;
+
+		private SimpleSemaphoreAsync itemsAvaiable;
+		private SimpleSemaphoreAsync spaceAvaiable;
+
 		private object mutex;
 		private LinkedList<T> items;
 
 		public BlockingQueueAsync(int maxItems) {
-			itemsAvaiable = new SemaphoreSlim(0, maxItems);
-			spaceAvaiable = new SemaphoreSlim(maxItems, maxItems);
+			itemsAvaiable = new SimpleSemaphoreAsync(0, maxItems);
+			spaceAvaiable = new SimpleSemaphoreAsync(maxItems, maxItems);
 			mutex = new object();
 			items = new LinkedList<T>();
 		}
 
 		public void Put(T item) {
-			spaceAvaiable.Wait();
+			bool res = spaceAvaiable.AcquireAsync(1).Result;
 
 			lock(mutex) {
 				items.AddLast(item);
 			}
-			itemsAvaiable.Release();
+			itemsAvaiable.Release(1);
 		}
 
 		public T Take() {
-			itemsAvaiable.Wait();
+			bool res = itemsAvaiable.AcquireAsync(1).Result;
 			T item;
 			lock (mutex) {
 				item = items.First.Value;
 				items.RemoveFirst();
 			}
-			spaceAvaiable.Release();
+			spaceAvaiable.Release(1);
 			return item;
 		}
 
 		public Task<T> TakeAsync() {
 			ShowCurrentThread("Start TakeAsync");
-			Task t = itemsAvaiable.WaitAsync();
+			Task t = itemsAvaiable.AcquireAsync(1);
 			return t.ContinueWith(ant =>
 			{
 				T item;
@@ -54,7 +57,7 @@ namespace AsyncLib
 					item = items.First.Value;
 					items.RemoveFirst();
 				}
-				spaceAvaiable.Release();
+				spaceAvaiable.Release(1);
 				return item;
 
 			});
@@ -62,7 +65,7 @@ namespace AsyncLib
 
 		public async Task<T> Take1Async() {
 			ShowCurrentThread("Start Take1Async");
-			await itemsAvaiable.WaitAsync();
+			await itemsAvaiable.AcquireAsync(1);
 
 			ShowCurrentThread("After Wait on Take1Async");
 			T item;
@@ -70,7 +73,7 @@ namespace AsyncLib
 				item = items.First.Value;
 				items.RemoveFirst();
 			}
-			spaceAvaiable.Release();
+			spaceAvaiable.Release(1);
 			return item;
 		}
 
