@@ -233,7 +233,7 @@ namespace AsyncLib
 		/// </summary>
 		/// <param name="units"></param>
 		/// <returns></returns>
-		public bool Aqcuire(int units) {
+		public bool Acquire(int units) {
 			return AcquireAsync(units).Result;
 		}
 

@@ -9,6 +9,11 @@ namespace BlockingQueue
 
 	class Program
 	{
+		/// <summary>
+		/// A simple example of BlockingQueueAsync use
+		/// </summary>
+		/// <param name="args"></param>
+		/// <returns></returns>
 		static async Task Main(string[] args) {
 			BlockingQueueAsync<int> queue = new BlockingQueueAsync<int>(10);
 

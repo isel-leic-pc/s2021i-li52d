@@ -25,8 +25,13 @@ namespace AsyncLib
 			items = new LinkedList<T>();
 		}
 
+		/// <summary>
+		/// This "Put" version is synchronous
+		/// Creating a "Put"  TAP version is left as an exercise
+		/// </summary>
+		/// <param name="item"></param>
 		public void Put(T item) {
-			bool res = spaceAvaiable.AcquireAsync(1).Result;
+			spaceAvaiable.Acquire(1);
 
 			lock(mutex) {
 				items.AddLast(item);
@@ -34,8 +39,12 @@ namespace AsyncLib
 			itemsAvaiable.Release(1);
 		}
 
+		/// <summary>
+		/// This "Take" version is synchronous
+		/// </summary>
+		/// <param name="item"></param>
 		public T Take() {
-			bool res = itemsAvaiable.AcquireAsync(1).Result;
+			itemsAvaiable.Acquire(1);
 			T item;
 			lock (mutex) {
 				item = items.First.Value;
@@ -45,6 +54,10 @@ namespace AsyncLib
 			return item;
 		}
 
+		/// <summary>
+		/// A TAP version with "manual" continuation
+		/// </summary>
+		/// <returns></returns>
 		public Task<T> TakeAsync() {
 			ShowCurrentThread("Start TakeAsync");
 			Task t = itemsAvaiable.AcquireAsync(1);
@@ -63,6 +76,12 @@ namespace AsyncLib
 			});
 		}
 
+		/// <summary>
+		/// A TAP version using an async method
+		/// </summary>
+		/// <returns>
+		/// A task representing the take operation
+		/// </returns>
 		public async Task<T> Take1Async() {
 			ShowCurrentThread("Start Take1Async");
 			await itemsAvaiable.AcquireAsync(1);
