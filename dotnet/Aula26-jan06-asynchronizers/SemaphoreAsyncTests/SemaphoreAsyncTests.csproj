@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AsyncLib\AsyncLib.csproj" />
+    <ProjectReference Include="..\AsyncLib\AsyncLib.csproj" />
   </ItemGroup>
 
 </Project>
