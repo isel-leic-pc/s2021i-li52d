@@ -47,17 +47,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aula23-24-dec16-more-tasks"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aula20-dec9-tasks-intro", "Aula20-dec9-tasks-intro", "{763D3CA3-64C9-4DE4-BE48-FD1402CACDBF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aula26-jan06-asynchronizers", "Aula26-jan06-asynchronizers", "{CC224DBC-88E3-4048-A986-9F5F530351DB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aula26-27-jan06-asynchronizers", "Aula26-27-jan06-asynchronizers", "{CC224DBC-88E3-4048-A986-9F5F530351DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockingQueue", "BlockingQueue\BlockingQueue.csproj", "{C8511AB8-C61D-43A2-99BA-E2D38F1D8AFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockingQueue", "BlockingQueue\BlockingQueue.csproj", "{C8511AB8-C61D-43A2-99BA-E2D38F1D8AFB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{59BE3845-2E9C-4CF2-8AEF-40FF50CE2EF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockingQueueTests", "Aula26-jan06-asynchronizers\BlockingQueueTests\BlockingQueueTests.csproj", "{30CE405B-1485-427E-9C02-0599C707FCC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockingQueueTests", "Aula26-jan06-asynchronizers\BlockingQueueTests\BlockingQueueTests.csproj", "{30CE405B-1485-427E-9C02-0599C707FCC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncLib", "AsyncLib\AsyncLib.csproj", "{C21F30CF-0DCF-4FC1-885B-83E296026392}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncLib", "AsyncLib\AsyncLib.csproj", "{C21F30CF-0DCF-4FC1-885B-83E296026392}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemaphoreAsyncTests", "Aula26-jan06-asynchronizers\SemaphoreAsyncTests\SemaphoreAsyncTests.csproj", "{F2DCE19C-9073-40F7-BF6D-A2F2D593CC97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemaphoreAsyncTests", "Aula26-jan06-asynchronizers\SemaphoreAsyncTests\SemaphoreAsyncTests.csproj", "{F2DCE19C-9073-40F7-BF6D-A2F2D593CC97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

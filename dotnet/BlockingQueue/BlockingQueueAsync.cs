@@ -12,15 +12,15 @@ namespace AsyncLib
 		//private SemaphoreSlim itemsAvaiable;
 		// private SemaphoreSlim spaceAvaiable;
 
-		private SimpleSemaphoreAsync itemsAvaiable;
-		private SimpleSemaphoreAsync spaceAvaiable;
+		private SemaphoreAsync itemsAvaiable;
+		private SemaphoreAsync spaceAvaiable;
 
 		private object mutex;
 		private LinkedList<T> items;
 
 		public BlockingQueueAsync(int maxItems) {
-			itemsAvaiable = new SimpleSemaphoreAsync(0, maxItems);
-			spaceAvaiable = new SimpleSemaphoreAsync(maxItems, maxItems);
+			itemsAvaiable = new SemaphoreAsync(0, maxItems);
+			spaceAvaiable = new SemaphoreAsync(maxItems, maxItems);
 			mutex = new object();
 			items = new LinkedList<T>();
 		}
