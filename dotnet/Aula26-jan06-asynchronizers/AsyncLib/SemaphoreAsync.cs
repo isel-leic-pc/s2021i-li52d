@@ -227,6 +227,16 @@ namespace AsyncLib
 		
 		}
 
+		/// <summary>
+		/// Acquire sync version just by getting the result of the async version
+		/// In this version the eventual interruption of the calling thread is not processed
+		/// </summary>
+		/// <param name="units"></param>
+		/// <returns></returns>
+		public bool Aqcuire(int units) {
+			return AcquireAsync(units).Result;
+		}
+
 		public void Release(int units) {
 		
 			if (permits + units < 0 || permits + units > maxPermits)
