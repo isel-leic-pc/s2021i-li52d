@@ -212,14 +212,17 @@ namespace AsyncLib
 				PendingAcquire pa = new PendingAcquire(units);
 				LinkedListNode<PendingAcquire> node = pendingAcquires.AddLast(pa);
 
-				CancellationTokenRegistration regHandler =
+				CancellationTokenRegistration regToken =
 					default(CancellationTokenRegistration);
 				Timer timer = null;
 				if (cToken.CanBeCanceled)
-					regHandler = cToken.Register(cancelHandler, node);
+					regToken = cToken.Register(cancelHandler, node);
 				if (timeout != Timeout.Infinite)
 					timer = new Timer(timeoutHandler, node, timeout, Timeout.Infinite);
-				return pa.Start(timer, regHandler);
+
+				// save regToken and timer on PendingAcquire for future eventual disposing
+				// and return the operation task
+				return pa.Start(timer, regToken);
 			}
 		
 		}
