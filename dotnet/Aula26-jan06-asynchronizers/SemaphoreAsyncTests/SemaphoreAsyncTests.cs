@@ -18,7 +18,7 @@ namespace AsynchronizersTests {
             bool res1 =  sem.AcquireAsync(2, CancellationToken.None, Timeout.Infinite).Result;
             Assert.IsTrue(res1);
         }
-
+         
         [TestMethod]
         [ExpectedException(typeof(TimeoutException))]
         public async Task TimeoutSemaphoreAcquireTest() {
