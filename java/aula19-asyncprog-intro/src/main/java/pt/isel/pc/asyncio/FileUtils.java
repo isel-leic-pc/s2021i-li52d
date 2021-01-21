@@ -1,5 +1,11 @@
 package pt.isel.pc.asyncio;
 
+import io.reactivex.Observable;
+import io.reactivex.Single;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -109,5 +115,75 @@ public class FileUtils {
         AsyncFile.copyAsync(fileIn1, fileOut1, cb);
 
         AsyncFile.copyAsync(fileIn2, fileOut2, cb);
+    }
+
+    public static Observable<byte[]> fromFile(String fileName) {
+        return Observable.create(source -> {
+            byte[] buffer = new byte[4096];
+            AsyncFile f = AsyncFile.open(fileName);
+
+
+            BiConsumer<Throwable,Integer>[] readDone =
+                new BiConsumer[1];
+
+
+            readDone[0] = ( t,  i) -> {
+                if (t != null) {
+                    source.onError(t);
+                    f.close();
+                }
+                else {
+                    if (i < 0) {
+                        source.onComplete();
+                        f.close();
+                    }
+                    else {
+                        source.onNext(Arrays.copyOf(buffer, i));
+                        f.readBytes(buffer, readDone[0]);
+                    }
+
+                }
+            };
+            f.readBytes(buffer, readDone[0]);
+        });
+    }
+
+    public static Single<Boolean> copyFile(String fin, String fOut)
+        throws IOException {
+        Observable<byte[]> fileChunks =
+            fromFile(fin);
+
+        return Single.create(source -> {
+            FileOutputStream fs = new FileOutputStream((fOut));
+            fileChunks.subscribe(
+                buf -> { fs.write(buf); showThread("copy file onNext"); },
+                t -> { fs.close(); source.onError(t); System.out.println(t); },
+                () ->  { fs.close(); source.onSuccess(true); },
+                (d) -> System.out.println("Subscribed")
+
+            );
+        });
+
+    }
+
+    private static void showThread(String msg) {
+        System.out.println(msg + " on thread: " +
+            Thread.currentThread().getId());
+    }
+
+    public static Single<Long> copyFile2(String fin, String fOut)
+        throws IOException {
+        FileOutputStream fs = new FileOutputStream((fOut));
+        return
+            fromFile(fin)
+                .reduce(0L, (t, b) -> {
+                    showThread("reduce " + b.length + "bytes");
+                    fs.write(b);
+                    return t + b.length;
+                })
+                .map(l -> {
+                    showThread("close out file!");
+                    fs.close(); return l;
+                });
     }
 }

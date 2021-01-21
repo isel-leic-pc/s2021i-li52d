@@ -52,6 +52,9 @@ namespace t2018i1 {
         static void Main(string[] args) {
             int[] elems = { 1, 2, 3 };
 
+            IEnumerable<String> items =
+                Enumerable.Range(1, 10)
+                    .Select((i) => "a" + i);
  
             Console.WriteLine("result sync = {0}", MapReduce(elems, 0));
         }

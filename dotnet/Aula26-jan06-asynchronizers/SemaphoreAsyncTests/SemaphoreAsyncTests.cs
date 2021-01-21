@@ -2,7 +2,10 @@
 using AsyncLib;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace AsynchronizersTests {
     
@@ -37,14 +40,46 @@ namespace AsynchronizersTests {
             await sem.AcquireAsync(2, cts.Token); 
         }
 
+      
+
+        [TestMethod]
+        public async Task CancellationOnStartForMultithreadedSemaphoreAcquireTest() {
+            SemaphoreAsync sem = new SemaphoreAsync(0, 10);
+            CancellationTokenSource cts = new CancellationTokenSource();
+            cts.Cancel();
+            Task[] tasks = 
+                        Enumerable.Range(1, 10)
+                        .Select( (n) =>
+                        {
+                           Task<bool> tres = Task.Run(() =>
+                           {
+                               Console.WriteLine("Thread {0}", n);
+                               return sem.AcquireAsync(1, cts.Token);
+                            
+                           });
+                           
+                            return tres;
+                        })
+                        .ToArray();
+
+        
+           
+            await Assert.ThrowsExceptionAsync<TaskCanceledException>(async () => await   Task.WhenAll(tasks));
+		
+            foreach(var t in tasks) {
+                Assert.IsTrue(t.IsCanceled);
+         
+			}
+
+		}
+
         [TestMethod]
         [ExpectedException(typeof(AggregateException))]
         public void CancellationOnStartForSemaphoreAcquireTest() {
             SemaphoreAsync sem = new SemaphoreAsync(1, 2);
             CancellationTokenSource cts = new CancellationTokenSource();
             cts.Cancel();
-
-            bool res = sem.AcquireAsync(2, cts.Token, 5000).Result ;
+            _ = sem.AcquireAsync(2, cts.Token, 5000).Result;
 
         }
     }

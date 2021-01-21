@@ -59,6 +59,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockingQueue", "Aula26-jan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncLib", "Aula26-jan06-asynchronizers\AsyncLib\AsyncLib.csproj", "{6C97BDBA-663D-4D14-8371-25AE7047ABB2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aula30-jan21", "Aula30-jan21", "{85C42216-C4AA-4A72-8740-1640E63613F7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "training2021i", "Aula30-jan21\training2021i.csproj", "{CE841A6A-95C6-4A4D-B45E-35B6507252A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +149,10 @@ Global
 		{6C97BDBA-663D-4D14-8371-25AE7047ABB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C97BDBA-663D-4D14-8371-25AE7047ABB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C97BDBA-663D-4D14-8371-25AE7047ABB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE841A6A-95C6-4A4D-B45E-35B6507252A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE841A6A-95C6-4A4D-B45E-35B6507252A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE841A6A-95C6-4A4D-B45E-35B6507252A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE841A6A-95C6-4A4D-B45E-35B6507252A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,6 +174,7 @@ Global
 		{F2DCE19C-9073-40F7-BF6D-A2F2D593CC97} = {59BE3845-2E9C-4CF2-8AEF-40FF50CE2EF6}
 		{0EC6C768-E4CB-4D89-955A-A6DF8F834C36} = {CC224DBC-88E3-4048-A986-9F5F530351DB}
 		{6C97BDBA-663D-4D14-8371-25AE7047ABB2} = {CC224DBC-88E3-4048-A986-9F5F530351DB}
+		{CE841A6A-95C6-4A4D-B45E-35B6507252A5} = {85C42216-C4AA-4A72-8740-1640E63613F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {56512544-A6CD-4146-B0AC-8CD61C0F36A5}
